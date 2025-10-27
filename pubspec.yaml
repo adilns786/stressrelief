@@ -30,7 +30,12 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-
+  audioplayers: ^6.1.0  # For sound effects
+  just_audio: ^0.9.36
+  file_picker: ^10.1.2
+  shared_preferences: ^2.2.2
+  fl_chart: ^0.63.0  
+  
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
@@ -56,6 +61,26 @@ flutter:
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
+
+  assets:
+    # Music mp3 files
+    - assets/birdsong.mp3
+    - assets/fireplace_glow.mp3
+    - assets/forest_dawn.mp3
+    - assets/mountain_breeze.mp3
+    - assets/calm_waves.mp3
+    - assets/gentle_winds.mp3
+    - assets/ocean_of_peace.mp3
+    - assets/soft_glow.mp3
+    - assets/thunderstorm_calm.mp3
+    - assets/tranquil_paths.mp3
+    - assets/electric_sunset.mp3
+    - assets/feel_the_flow.mp3
+    - assets/groove_wave.mp3
+    - assets/retro_vibes.mp3
+    - assets/urban_melody.mp3
+    - assets/soulful_symphony.mp3
+
 
   # To add assets to your application, add an assets section, like this:
   # assets:

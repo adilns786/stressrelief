@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:math';
 import 'dart:async';
+import 'package:audioplayers/audioplayers.dart';
 
 void main() {
   runApp(const StressLensApp());
@@ -112,6 +113,7 @@ class _HomePageState extends State<HomePage> {
     const MusicPage(),
     const MoodChartPage(),
     const DailyTipPage(),
+    const SettingsPage(),
   ];
   @override
   Widget build(BuildContext context) {
@@ -713,71 +715,195 @@ class _BreathingCircleState extends State<BreathingCircle>
   }
 }
 
-// Music Page
 class MusicPage extends StatefulWidget {
   const MusicPage({Key? key}) : super(key: key);
+
   @override
   State<MusicPage> createState() => _MusicPageState();
 }
 
 class _MusicPageState extends State<MusicPage> {
   String? _currentlyPlaying;
+  final AudioPlayer _audioPlayer = AudioPlayer();
+
+  // 🎵 Updated sound list with relevant names, icons, and colors
   final List<Map<String, dynamic>> _sounds = [
-    {'name': 'Rainfall', 'icon': Icons.water_drop, 'color': Colors.blue},
-    {'name': 'Ocean Waves', 'icon': Icons.waves, 'color': Colors.cyan},
-    {'name': 'Wind', 'icon': Icons.air, 'color': Colors.grey},
-    {'name': 'Forest', 'icon': Icons.forest, 'color': Colors.green},
-    {'name': 'Soft Piano', 'icon': Icons.piano, 'color': Colors.purple},
     {
-      'name': 'Meditation',
+      'name': 'Birdsong Morning',
+      'icon': Icons.filter_vintage,
+      'color': const Color(0xFFB3E5FC), // Light Blue
+      'file': 'birdsong.mp3',
+    },
+    {
+      'name': 'Fireplace Glow',
+      'icon': Icons.local_fire_department,
+      'color': const Color(0xFFFFAB91), // Warm Orange
+      'file': 'fireplace_glow.mp3',
+    },
+    {
+      'name': 'Forest Dawn',
+      'icon': Icons.forest,
+      'color': const Color(0xFF81C784), // Fresh Green
+      'file': 'forest_dawn.mp3',
+    },
+    {
+      'name': 'Mountain Breeze',
+      'icon': Icons.terrain,
+      'color': const Color(0xFFA5D6A7), // Cool Green
+      'file': 'mountain_breeze.mp3',
+    },
+    {
+      'name': 'Calm Waves',
+      'icon': Icons.waves,
+      'color': const Color(0xFF80DEEA), // Ocean Cyan
+      'file': 'calm_waves.mp3',
+    },
+    {
+      'name': 'Gentle Winds',
+      'icon': Icons.air,
+      'color': const Color(0xFFB0BEC5), // Soft Gray
+      'file': 'gentle_winds.mp3',
+    },
+    {
+      'name': 'Ocean of Peace',
+      'icon': Icons.water,
+      'color': const Color(0xFF4FC3F7), // Deep Aqua
+      'file': 'ocean_of_peace.mp3',
+    },
+    {
+      'name': 'Soft Glow',
+      'icon': Icons.light_mode,
+      'color': const Color(0xFFD1C4E9), // Lavender
+      'file': 'soft_glow.mp3',
+    },
+    {
+      'name': 'Thunderstorm Calm',
+      'icon': Icons.flash_on,
+      'color': const Color(0xFF90A4AE), // Storm Gray
+      'file': 'thunderstorm_calm.mp3',
+    },
+    {
+      'name': 'Tranquil Paths',
+      'icon': Icons.spa,
+      'color': const Color(0xFFCE93D8), // Soft Purple
+      'file': 'tranquil_paths.mp3',
+    },
+    {
+      'name': 'Electric Sunset',
+      'icon': Icons.sunny,
+      'color': const Color(0xFFFFCC80), // Sunset Orange
+      'file': 'electric_sunset.mp3',
+    },
+    {
+      'name': 'Feel the Flow',
       'icon': Icons.self_improvement,
-      'color': Colors.orange,
+      'color': const Color(0xFFFFE082), // Calm Yellow
+      'file': 'feel_the_flow.mp3',
+    },
+    {
+      'name': 'Groove Wave',
+      'icon': Icons.graphic_eq,
+      'color': const Color(0xFF80CBC4), // Teal
+      'file': 'groove_wave.mp3',
+    },
+    {
+      'name': 'Retro Vibes',
+      'icon': Icons.music_note,
+      'color': const Color(0xFFBA68C8), // Purple
+      'file': 'retro_vibes.mp3',
+    },
+    {
+      'name': 'Soulful Symphony',
+      'icon': Icons.piano,
+      'color': const Color(0xFFF48FB1), // Rose Pink
+      'file': 'soulful_symphony.mp3',
     },
   ];
+
+  Future<void> _togglePlay(String fileName, String name) async {
+    if (_currentlyPlaying == name) {
+      await _audioPlayer.stop();
+      setState(() => _currentlyPlaying = null);
+    } else {
+      await _audioPlayer.stop();
+      await _audioPlayer.play(AssetSource(fileName));
+      setState(() => _currentlyPlaying = name);
+    }
+  }
+
+  @override
+  void dispose() {
+    _audioPlayer.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      padding: const EdgeInsets.all(16),
-      itemCount: _sounds.length,
-      itemBuilder: (context, index) {
-        final sound = _sounds[index];
-        final isPlaying = _currentlyPlaying == sound['name'];
-        return Card(
-          margin: const EdgeInsets.only(bottom: 12),
-          elevation: 2,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: ListTile(
-            leading: CircleAvatar(
-              backgroundColor: sound['color'],
-              child: Icon(sound['icon'], color: Colors.white),
-            ),
-            title: Text(
-              sound['name'],
-              style: const TextStyle(fontWeight: FontWeight.bold),
-            ),
-            trailing: IconButton(
-              icon: Icon(isPlaying ? Icons.pause_circle : Icons.play_circle),
-              iconSize: 36,
-              color: sound['color'],
-              onPressed: () {
-                setState(() {
-                  _currentlyPlaying = isPlaying ? null : sound['name'];
-                });
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(
-                      isPlaying ? 'Paused' : 'Playing ${sound['name']}',
-                    ),
-                    duration: const Duration(seconds: 1),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text(
+          "Relaxation Music",
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        centerTitle: true,
+        backgroundColor: Colors.teal[400],
+      ),
+      body: GridView.builder(
+        padding: const EdgeInsets.all(16),
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          crossAxisSpacing: 16,
+          mainAxisSpacing: 16,
+          childAspectRatio: 1,
+        ),
+        itemCount: _sounds.length,
+        itemBuilder: (context, index) {
+          final sound = _sounds[index];
+          final isPlaying = _currentlyPlaying == sound['name'];
+
+          return GestureDetector(
+            onTap: () => _togglePlay(sound['file'], sound['name']),
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 300),
+              decoration: BoxDecoration(
+                color:
+                    isPlaying
+                        ? sound['color'].withOpacity(0.9)
+                        : sound['color'].withOpacity(0.6),
+                borderRadius: BorderRadius.circular(20),
+                boxShadow: [
+                  BoxShadow(
+                    color: sound['color'].withOpacity(0.5),
+                    blurRadius: 8,
+                    offset: const Offset(2, 4),
                   ),
-                );
-              },
+                ],
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(sound['icon'], size: 48, color: Colors.white),
+                  const SizedBox(height: 10),
+                  Text(
+                    sound['name'],
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 6),
+                  Icon(
+                    isPlaying ? Icons.pause_circle : Icons.play_circle,
+                    color: Colors.white,
+                    size: 32,
+                  ),
+                ],
+              ),
             ),
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
 }
